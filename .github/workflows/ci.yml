@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: echo "Add your setup steps here (e.g. install Node.js, Python, etc.)"
+
+      - name: Install dependencies
+        run: echo "Add your dependency installation command here"
+
+      - name: Run tests
+        run: echo "Add your test command here"
