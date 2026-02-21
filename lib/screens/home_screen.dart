@@ -4,6 +4,8 @@ import 'calculator_screen.dart';
 import 'history_screen.dart';
 import 'stats_screen.dart';
 import '../theme/app_theme.dart';
+import '../services/mood_service.dart';
+import '../services/theme_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,21 +14,51 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  MoodLog? _lastMood;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadMood();
+  }
+
+  Future<void> _loadMood() async {
+    final mood = await MoodService.getLastMood();
+    setState(() => _lastMood = mood);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: _buildDrawer(context),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: _buildMenuButton(context, isDark),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+                isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded),
+            onPressed: () => ThemeService().toggleTheme(context),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
-          gradient: isDark 
-              ? AppTheme.backgroundGradientDark 
+          gradient: isDark
+              ? AppTheme.backgroundGradientDark
               : AppTheme.backgroundGradientLight,
         ),
         child: SafeArea(
@@ -34,27 +66,32 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             children: [
               // Animated Background Elements
               _buildAnimatedBackground(context),
-              
+
               // Main Content
-              Padding(
+              SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 20),
-                    
-                    // Header with Hamburger Menu
-                    _buildHeader(context),
-                    
-                    const SizedBox(height: 40),
-                    
+                    const SizedBox(height: 12),
+
+                    // Welcome Message
+                    _buildGreeting(context),
+
+                    const SizedBox(height: 32),
+
+                    // Mood Check-in
+                    _buildMoodCheckIn(context),
+
+                    const SizedBox(height: 32),
+
                     // App Logo/Icon
                     Center(
                       child: _buildLogo(context),
                     ),
-                    
+
                     const SizedBox(height: 32),
-                    
+
                     // Title
                     Center(
                       child: Text(
@@ -64,12 +101,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           color: isDark ? Colors.white : Color(0xFF1E293B),
                         ),
                       ),
-                    ).animate()
-                     .fadeIn(delay: 200.ms)
-                     .slideY(begin: 0.2, end: 0),
-                    
+                    )
+                        .animate()
+                        .fadeIn(delay: 200.ms)
+                        .slideY(begin: 0.2, end: 0),
+
                     const SizedBox(height: 8),
-                    
+
                     Center(
                       child: Text(
                         'Measure • Understand • Improve',
@@ -77,78 +115,83 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
                       ),
-                    ).animate()
-                     .fadeIn(delay: 300.ms),
-                    
+                    ).animate().fadeIn(delay: 300.ms),
+
                     const SizedBox(height: 48),
-                    
+
                     // Feature Cards
-                    Expanded(
-                      child: Column(
-                        children: [
-                          _buildFeatureCard(
+                    Column(
+                      children: [
+                        _buildFeatureCard(
+                          context,
+                          icon: Icons.calculate_rounded,
+                          title: 'Calculate Stress',
+                          subtitle: 'Enter BP & Pulse for instant analysis',
+                          color: AppTheme.primaryColor,
+                          onTap: () => Navigator.push(
                             context,
-                            icon: Icons.calculate_rounded,
-                            title: 'Calculate Stress',
-                            subtitle: 'Enter BP & Pulse for instant analysis',
-                            color: AppTheme.primaryColor,
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const CalculatorScreen(),
-                              ),
+                            MaterialPageRoute(
+                              builder: (_) => const CalculatorScreen(),
                             ),
-                          ).animate()
-                           .fadeIn(delay: 400.ms)
-                           .slideX(begin: -0.2, end: 0),
-                          
-                          const SizedBox(height: 16),
-                          
-                          _buildFeatureCard(
+                          ),
+                        )
+                            .animate()
+                            .fadeIn(delay: 400.ms)
+                            .slideX(begin: -0.2, end: 0),
+                        const SizedBox(height: 16),
+                        _buildFeatureCard(
+                          context,
+                          icon: Icons.bar_chart_rounded,
+                          title: 'View Statistics',
+                          subtitle: 'Charts, trends & detailed insights',
+                          color: AppTheme.secondaryColor,
+                          onTap: () => Navigator.push(
                             context,
-                            icon: Icons.bar_chart_rounded,
-                            title: 'View Statistics',
-                            subtitle: 'Charts, trends & detailed insights',
-                            color: AppTheme.secondaryColor,
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const StatsScreen(),
-                              ),
+                            MaterialPageRoute(
+                              builder: (_) => const StatsScreen(),
                             ),
-                          ).animate()
-                           .fadeIn(delay: 500.ms)
-                           .slideX(begin: 0.2, end: 0),
-                          
-                          const SizedBox(height: 16),
-                          
-                          _buildFeatureCard(
+                          ),
+                        )
+                            .animate()
+                            .fadeIn(delay: 500.ms)
+                            .slideX(begin: 0.2, end: 0),
+                        const SizedBox(height: 16),
+                        _buildFeatureCard(
+                          context,
+                          icon: Icons.history_rounded,
+                          title: 'View History',
+                          subtitle: 'Track your stress levels over time',
+                          color: AppTheme.accentColor,
+                          onTap: () => Navigator.push(
                             context,
-                            icon: Icons.history_rounded,
-                            title: 'View History',
-                            subtitle: 'Track your stress levels over time',
-                            color: AppTheme.accentColor,
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const HistoryScreen(),
-                              ),
+                            MaterialPageRoute(
+                              builder: (_) => const HistoryScreen(),
                             ),
-                          ).animate()
-                           .fadeIn(delay: 600.ms)
-                           .slideX(begin: -0.2, end: 0),
-                        ],
-                      ),
+                          ),
+                        )
+                            .animate()
+                            .fadeIn(delay: 600.ms)
+                            .slideX(begin: -0.2, end: 0),
+                      ],
                     ),
-                    
+
+                    const SizedBox(height: 24),
+
+                    // Tip of the Day
+                    _buildTipCard(context),
+
+                    const SizedBox(height: 48),
+
                     // Info Section
                     Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.1),
+                        color: (isDark ? Colors.white : AppTheme.primaryColor)
+                            .withOpacity(0.1),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.2),
+                          color: (isDark ? Colors.white : AppTheme.primaryColor)
+                              .withOpacity(0.2),
                         ),
                       ),
                       child: Row(
@@ -162,15 +205,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             child: Text(
                               'This app uses cardiovascular markers to estimate stress levels. For medical concerns, please consult a healthcare professional.',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.7),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ).animate()
-                     .fadeIn(delay: 700.ms),
-                     
+                    ).animate().fadeIn(delay: 700.ms),
+
                     const SizedBox(height: 16),
                   ],
                 ),
@@ -182,58 +225,132 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildMenuButton(BuildContext context, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: IconButton(
+        icon: Icon(
+          Icons.menu_rounded,
+          color: isDark ? Colors.white : const Color(0xFF1E293B),
+        ),
+        onPressed: () {
+          _scaffoldKey.currentState?.openDrawer();
+        },
+      ),
+    );
+  }
+
+  Widget _buildGreeting(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final hour = DateTime.now().hour;
+    String greeting;
+    if (hour < 12) {
+      greeting = 'Good Morning';
+    } else if (hour < 17) {
+      greeting = 'Good Afternoon';
+    } else {
+      greeting = 'Good Evening';
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Hamburger Menu Button
-        Container(
-          decoration: BoxDecoration(
-            color: (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: IconButton(
-            icon: Icon(
-              Icons.menu_rounded,
-              color: isDark ? Colors.white : Color(0xFF1E293B),
-            ),
-            onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
-          ),
-        ).animate()
-         .fadeIn(delay: 100.ms)
-         .slideX(begin: -0.3, end: 0),
-        
-        // App Title (optional, can be hidden on smaller screens)
         Text(
-          'Wellness',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : Color(0xFF1E293B),
+          greeting,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onSurface.withOpacity(0.6),
+            fontWeight: FontWeight.w500,
           ),
-        ).animate()
-         .fadeIn(delay: 150.ms),
-        
-        // Placeholder for symmetry
-        SizedBox(width: 48),
+        ),
+        Text(
+          'Wellness Companion',
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : const Color(0xFF1E293B),
+          ),
+        ),
       ],
-    );
+    ).animate().fadeIn(duration: 600.ms).slideX(begin: -0.1, end: 0);
+  }
+
+  Widget _buildTipCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+              : [Colors.white, const Color(0xFFF8FAFC)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color:
+              (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.1),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppTheme.accentColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.lightbulb_rounded,
+                    color: AppTheme.accentColor, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Tip of the Day',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Taking just 5 minutes for deep breathing can lower your cortisol levels and improve focus.',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              height: 1.5,
+              color: theme.colorScheme.onSurface.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 800.ms).scale(begin: const Offset(0.95, 0.95));
   }
 
   Widget _buildLogo(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Container(
       width: 110,
       height: 110,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
+          colors: isDark
               ? [Color(0xFF6366F1), Color(0xFF8B5CF6)]
               : [AppTheme.primaryColor, AppTheme.secondaryColor],
           begin: Alignment.topLeft,
@@ -242,7 +359,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: (isDark ? Color(0xFF6366F1) : AppTheme.primaryColor).withOpacity(0.4),
+            color: (isDark ? Color(0xFF6366F1) : AppTheme.primaryColor)
+                .withOpacity(0.4),
             blurRadius: 30,
             offset: Offset(0, 15),
           ),
@@ -253,15 +371,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         size: 55,
         color: Colors.white,
       ),
-    ).animate()
-     .scale(duration: 600.ms, curve: Curves.easeOutBack)
-     .fadeIn();
+    ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack).fadeIn();
   }
 
   Widget _buildAnimatedBackground(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Positioned(
       top: -100,
       right: -100,
@@ -277,17 +393,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ],
           ),
         ),
-      ).animate(onPlay: (controller) => controller.repeat())
-       .scale(duration: 10.seconds, begin: Offset(1, 1), end: Offset(1.2, 1.2)),
+      ).animate(onPlay: (controller) => controller.repeat()).scale(
+          duration: 10.seconds, begin: Offset(1, 1), end: Offset(1.2, 1.2)),
     );
   }
 
   Widget _buildDrawer(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Drawer(
-      backgroundColor: isDark ? AppTheme.backgroundDark : AppTheme.backgroundLight,
+      backgroundColor:
+          isDark ? AppTheme.backgroundDark : AppTheme.backgroundLight,
       child: SafeArea(
         child: Column(
           children: [
@@ -299,7 +416,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: isDark 
+                  colors: isDark
                       ? [Color(0xFF1E1B4B), Color(0xFF312E81)]
                       : [AppTheme.primaryColor, AppTheme.secondaryColor],
                 ),
@@ -338,11 +455,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ],
               ),
             ),
-            
+
             // Menu Items
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 children: [
                   _buildDrawerItem(
                     context,
@@ -362,7 +480,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const CalculatorScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const CalculatorScreen()),
                       );
                     },
                   ),
@@ -388,18 +507,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const HistoryScreen()),
                       );
                     },
                   ),
-                  
+
                   const SizedBox(height: 16),
                   Divider(),
                   const SizedBox(height: 8),
-                  
+
                   // About Section
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
                       'About',
                       style: theme.textTheme.labelLarge?.copyWith(
@@ -464,6 +585,84 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
+  Widget _buildMoodCheckIn(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color:
+            (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.05),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color:
+              (isDark ? Colors.white : AppTheme.primaryColor).withOpacity(0.1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'How are you feeling?',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (_lastMood != null)
+                Text(
+                  'Last: ${_lastMood!.emoji}',
+                  style: theme.textTheme.bodySmall,
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _moodButton(context, '😊', 'Good'),
+              _moodButton(context, '😐', 'Okay'),
+              _moodButton(context, '😔', 'Low'),
+              _moodButton(context, '😫', 'Stressed'),
+              _moodButton(context, '😴', 'Tired'),
+            ],
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1, end: 0);
+  }
+
+  Widget _moodButton(BuildContext context, String emoji, String label) {
+    return InkWell(
+      onTap: () async {
+        await MoodService.logMood(emoji, label);
+        _loadMood();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Logged: $label $emoji'),
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+            width: 200,
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 28)),
+            const SizedBox(height: 4),
+            Text(label, style: const TextStyle(fontSize: 10)),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildDrawerItem(
     BuildContext context, {
     required IconData icon,
@@ -473,7 +672,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       elevation: 0,
@@ -521,7 +720,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(

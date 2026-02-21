@@ -101,9 +101,19 @@ class _ResultScreenState extends State<ResultScreen> {
                       Text(
                         widget.result.emoji,
                         style: TextStyle(fontSize: 60),
-                      ).animate()
-                       .scale(duration: 500.ms, curve: Curves.easeOutBack),
+                      )
+                          .animate()
+                          .scale(duration: 500.ms, curve: Curves.easeOutBack),
                       const SizedBox(height: 8),
+                      if (widget.result.name != null)
+                        Text(
+                          widget.result.name!,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ).animate().fadeIn(delay: 100.ms),
                       Text(
                         widget.result.levelText,
                         style: TextStyle(
@@ -111,8 +121,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                         ),
-                      ).animate()
-                       .fadeIn(delay: 200.ms),
+                      ).animate().fadeIn(delay: 200.ms),
                     ],
                   ),
                 ),
@@ -120,7 +129,8 @@ class _ResultScreenState extends State<ResultScreen> {
             ),
             leading: IconButton(
               icon: Icon(Icons.close, color: Colors.white),
-              onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+              onPressed: () =>
+                  Navigator.of(context).popUntil((route) => route.isFirst),
             ),
           ),
 
@@ -154,7 +164,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       color: theme.colorScheme.onSurface.withOpacity(0.8),
                     ),
                   ),
-                  
+
                   if (_previousResult != null) ...[
                     const SizedBox(height: 16),
                     Container(
@@ -183,7 +193,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                     ),
                   ],
-                  
+
                   const SizedBox(height: 32),
 
                   // Recommendations
@@ -210,9 +220,9 @@ class _ResultScreenState extends State<ResultScreen> {
                       entry.key,
                     );
                   }).toList(),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Disclaimer
                   Container(
                     padding: EdgeInsets.all(16),
@@ -240,7 +250,7 @@ class _ResultScreenState extends State<ResultScreen> {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
                 ],
               ),
@@ -262,8 +272,11 @@ class _ResultScreenState extends State<ResultScreen> {
             Text(
               'Stress Score',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
             ),
             const SizedBox(height: 8),
             Row(
@@ -273,16 +286,19 @@ class _ResultScreenState extends State<ResultScreen> {
                 Text(
                   widget.result.stressScore.toStringAsFixed(0),
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontSize: 56,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
+                        fontSize: 56,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
                 ),
                 Text(
                   '/100',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
-                  ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.4),
+                      ),
                 ),
               ],
             ),
@@ -299,48 +315,67 @@ class _ResultScreenState extends State<ResultScreen> {
           ],
         ),
       ),
-    ).animate()
-     .scale(duration: 400.ms, curve: Curves.easeOut);
+    ).animate().scale(duration: 400.ms, curve: Curves.easeOut);
   }
 
   Widget _buildVitalsCard(BuildContext context) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: Column(
           children: [
-            _buildVitalItem(
-              context,
-              icon: Icons.favorite,
-              label: 'Blood Pressure',
-              value: '${widget.result.systolicBP}/${widget.result.diastolicBP}',
-              unit: 'mmHg',
+            // First row: BP and Pulse
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: _buildVitalItem(
+                    context,
+                    icon: Icons.favorite,
+                    label: 'Blood Pressure',
+                    value:
+                        '${widget.result.systolicBP}/${widget.result.diastolicBP}',
+                    unit: 'mmHg',
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  width: 1,
+                  color: Theme.of(context).dividerColor,
+                ),
+                Expanded(
+                  child: _buildVitalItem(
+                    context,
+                    icon: Icons.monitor_heart,
+                    label: 'Pulse Rate',
+                    value: '${widget.result.pulseRate}',
+                    unit: 'BPM',
+                  ),
+                ),
+              ],
             ),
-            Container(
-              height: 40,
-              width: 1,
-              color: Theme.of(context).dividerColor,
-            ),
-            _buildVitalItem(
-              context,
-              icon: Icons.monitor_heart,
-              label: 'Pulse Rate',
-              value: '${widget.result.pulseRate}',
-              unit: 'BPM',
-            ),
+            // Second row: Age (if available)
             if (widget.result.age != null) ...[
+              const SizedBox(height: 12),
               Container(
-                height: 40,
-                width: 1,
+                height: 1,
+                width: double.infinity,
                 color: Theme.of(context).dividerColor,
               ),
-              _buildVitalItem(
-                context,
-                icon: Icons.cake,
-                label: 'Age',
-                value: '${widget.result.age}',
-                unit: 'years',
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: _buildVitalItem(
+                      context,
+                      icon: Icons.cake,
+                      label: 'Age',
+                      value: '${widget.result.age}',
+                      unit: 'years',
+                    ),
+                  ),
+                ],
               ),
             ],
           ],
@@ -363,21 +398,21 @@ class _ResultScreenState extends State<ResultScreen> {
         Text(
           value,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         Text(
           unit,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-          ),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
         ),
         const SizedBox(height: 4),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            fontSize: 11,
-          ),
+                fontSize: 11,
+              ),
         ),
       ],
     );
@@ -389,7 +424,7 @@ class _ResultScreenState extends State<ResultScreen> {
     int index,
   ) {
     final theme = Theme.of(context);
-    
+
     return Card(
       margin: EdgeInsets.only(bottom: 16),
       child: ExpansionTile(
@@ -425,20 +460,20 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 _buildTag(
                   context,
                   '-${rec.stressReductionPercent.toStringAsFixed(0)}% stress',
                   Colors.green,
                 ),
-                const SizedBox(width: 8),
                 _buildTag(
                   context,
                   '${rec.durationMinutes} min',
                   Colors.blue,
                 ),
-                const SizedBox(width: 8),
                 _buildTag(
                   context,
                   rec.difficulty,
@@ -536,9 +571,7 @@ class _ResultScreenState extends State<ResultScreen> {
           ),
         ],
       ),
-    ).animate()
-     .fadeIn(delay: (100 * index).ms)
-     .slideY(begin: 0.2, end: 0);
+    ).animate().fadeIn(delay: (100 * index).ms).slideY(begin: 0.2, end: 0);
   }
 
   Widget _buildTag(BuildContext context, String text, Color color) {

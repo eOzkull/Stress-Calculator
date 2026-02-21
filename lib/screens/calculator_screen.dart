@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/stress_calculator_service.dart';
-import '../models/stress_result.dart';
 import 'result_screen.dart';
 
 class CalculatorScreen extends StatefulWidget {
@@ -17,6 +16,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   final _diastolicController = TextEditingController();
   final _pulseController = TextEditingController();
   final _ageController = TextEditingController();
+  final _nameController = TextEditingController();
 
   bool _isLoading = false;
 
@@ -26,6 +26,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     _diastolicController.dispose();
     _pulseController.dispose();
     _ageController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -41,9 +42,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           systolicBP: int.parse(_systolicController.text),
           diastolicBP: int.parse(_diastolicController.text),
           pulseRate: int.parse(_pulseController.text),
-          age: _ageController.text.isEmpty 
-              ? null 
+          age: _ageController.text.isEmpty
+              ? null
               : int.parse(_ageController.text),
+          name: _nameController.text.isEmpty ? null : _nameController.text,
         );
 
         setState(() => _isLoading = false);
@@ -99,56 +101,144 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                // Blood Pressure Section
-                _buildSectionTitle(context, 'Blood Pressure', Icons.favorite),
+                // Name Section
+                _buildSectionTitle(
+                  context,
+                  'Name (Optional)',
+                  Icons.person_outline,
+                ),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildInputField(
-                        controller: _systolicController,
-                        label: 'Systolic',
-                        hint: '120',
-                        suffix: 'mmHg',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
-                          }
-                          final num = int.tryParse(value);
-                          if (num == null || num < 70 || num > 250) {
-                            return '70-250';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Text('/', style: theme.textTheme.headlineMedium),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _buildInputField(
-                        controller: _diastolicController,
-                        label: 'Diastolic',
-                        hint: '80',
-                        suffix: 'mmHg',
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Required';
-                          }
-                          final num = int.tryParse(value);
-                          if (num == null || num < 40 || num > 150) {
-                            return '40-150';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ],
+                _buildInputField(
+                  controller: _nameController,
+                  label: 'Whose measurement is this?',
+                  hint: 'e.g. Dad, Morning Check',
+                  suffix: '',
+                  isOptional: true,
+                  validator: (value) => null, // No validation needed for name
+                  useDigitsOnly: false,
+                  maxLength: 20,
+                ),
+                const SizedBox(height: 32),
+
+                // Blood Pressure Section
+                _buildSectionTitle(
+                  context,
+                  'Blood Pressure',
+                  Icons.favorite,
+                  onInfoTap: () => _showInfoDialog(
+                    context,
+                    'Blood Pressure',
+                    'Systolic is the pressure when your heart beats. Diastolic is the pressure when your heart rests between beats.',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Use column layout on smaller screens, row on larger
+                    final isCompact =
+                        constraints.maxWidth < 400; // Increased threshold
+                    if (isCompact) {
+                      return Column(
+                        children: [
+                          _buildInputField(
+                            controller: _systolicController,
+                            label: 'Systolic',
+                            hint: '120',
+                            suffix: 'mmHg',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Required';
+                              }
+                              final num = int.tryParse(value);
+                              if (num == null || num < 70 || num > 250) {
+                                return '70-250';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          _buildInputField(
+                            controller: _diastolicController,
+                            label: 'Diastolic',
+                            hint: '80',
+                            suffix: 'mmHg',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Required';
+                              }
+                              final num = int.tryParse(value);
+                              if (num == null || num < 40 || num > 150) {
+                                return '40-150';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: _buildInputField(
+                            controller: _systolicController,
+                            label: 'Systolic',
+                            hint: '120',
+                            suffix: 'mmHg',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Required';
+                              }
+                              final num = int.tryParse(value);
+                              if (num == null || num < 70 || num > 250) {
+                                return '70-250';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          child: Text('/',
+                              style: theme.textTheme.headlineMedium
+                                  ?.copyWith(color: theme.dividerColor)),
+                        ),
+                        Expanded(
+                          child: _buildInputField(
+                            controller: _diastolicController,
+                            label: 'Diastolic',
+                            hint: '80',
+                            suffix: 'mmHg',
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Required';
+                              }
+                              final num = int.tryParse(value);
+                              if (num == null || num < 40 || num > 150) {
+                                return '40-150';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
 
                 // Pulse Rate
-                _buildSectionTitle(context, 'Pulse Rate', Icons.monitor_heart),
+                _buildSectionTitle(
+                  context,
+                  'Pulse Rate',
+                  Icons.monitor_heart,
+                  onInfoTap: () => _showInfoDialog(
+                    context,
+                    'Pulse Rate',
+                    'The number of times your heart beats per minute. A normal resting heart rate for adults ranges from 60 to 100 beats per minute.',
+                  ),
+                ),
                 const SizedBox(height: 16),
                 _buildInputField(
                   controller: _pulseController,
@@ -169,7 +259,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 const SizedBox(height: 24),
 
                 // Age (Optional)
-                _buildSectionTitle(context, 'Age (Optional)', Icons.cake),
+                _buildSectionTitle(
+                  context,
+                  'Age (Optional)',
+                  Icons.cake,
+                  onInfoTap: () => _showInfoDialog(
+                    context,
+                    'Age',
+                    'Age helps in normalizing your cardiovascular markers as baseline vitals change with age.',
+                  ),
+                ),
                 const SizedBox(height: 16),
                 _buildInputField(
                   controller: _ageController,
@@ -201,7 +300,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             width: 24,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Text(
@@ -245,7 +345,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title, IconData icon) {
+  void _showInfoDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title, IconData icon,
+      {VoidCallback? onInfoTap}) {
     return Row(
       children: [
         Icon(
@@ -257,10 +374,21 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.primary,
+              ),
         ),
+        if (onInfoTap != null) ...[
+          const SizedBox(width: 4),
+          IconButton(
+            icon: Icon(Icons.info_outline,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+            onPressed: onInfoTap,
+            constraints: const BoxConstraints(),
+            padding: EdgeInsets.zero,
+          ),
+        ],
       ],
     );
   }
@@ -272,14 +400,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     required String suffix,
     required String? Function(String?) validator,
     bool isOptional = false,
+    bool useDigitsOnly = true,
+    int maxLength = 3,
   }) {
     return TextFormField(
       controller: controller,
-      keyboardType: TextInputType.number,
+      keyboardType: useDigitsOnly ? TextInputType.number : TextInputType.text,
       textInputAction: TextInputAction.next,
       inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(3),
+        if (useDigitsOnly) FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(maxLength),
       ],
       decoration: InputDecoration(
         labelText: label + (isOptional ? ' (Optional)' : ''),

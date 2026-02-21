@@ -17,6 +17,7 @@ class StressResult {
   final int diastolicBP;
   final int pulseRate;
   final int? age;
+  final String? name;
 
   StressResult({
     required this.stressScore,
@@ -27,6 +28,7 @@ class StressResult {
     required this.diastolicBP,
     required this.pulseRate,
     this.age,
+    this.name,
   });
 
   String get levelText {
@@ -69,6 +71,7 @@ class StressResult {
       'diastolicBP': diastolicBP,
       'pulseRate': pulseRate,
       'age': age,
+      'name': name,
     };
   }
 
@@ -82,6 +85,7 @@ class StressResult {
       diastolicBP: json['diastolicBP'],
       pulseRate: json['pulseRate'],
       age: json['age'],
+      name: json['name'],
     );
   }
 

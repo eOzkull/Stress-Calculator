@@ -10,28 +10,38 @@ class AppTheme {
   static const Color moderateStressColor = Color(0xFFF59E0B); // Amber
   static const Color highStressColor = Color(0xFFF97316); // Orange
   static const Color criticalStressColor = Color(0xFFEF4444); // Red
-  
+
   // Light theme colors
   static const Color backgroundLight = Color(0xFFF8FAFC);
   static const Color surfaceLight = Colors.white;
   static const Color cardLight = Color(0xFFFFFFFF);
-  
+
   // Dark theme colors
   static const Color backgroundDark = Color(0xFF0F172A);
   static const Color surfaceDark = Color(0xFF1E293B);
   static const Color cardDark = Color(0xFF334155);
+
+  // Spacing Constants
+  static const double spacingEmpty = 0;
+  static const double spacingXs = 4;
+  static const double spacingSmall = 8;
+  static const double spacingMedium = 16;
+  static const double spacingLarge = 24;
+  static const double spacingXl = 32;
+  static const double spacing2Xl = 48;
+  static const double spacing3Xl = 64;
 
   // Gradient colors
   static const List<Color> primaryGradient = [
     Color(0xFF6366F1),
     Color(0xFF8B5CF6),
   ];
-  
+
   static const List<Color> accentGradient = [
     Color(0xFF06B6D4),
     Color(0xFF6366F1),
   ];
-  
+
   static const List<Color> warmGradient = [
     Color(0xFFF59E0B),
     Color(0xFFEF4444),
@@ -47,7 +57,7 @@ class AppTheme {
       Color(0xFFF5F3FF),
     ],
   );
-  
+
   static const LinearGradient backgroundGradientDark = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

@@ -12,6 +12,7 @@ class StressCalculatorService {
     required int diastolicBP,
     required int pulseRate,
     int? age,
+    String? name,
   }) {
     // Validate inputs
     if (systolicBP < 70 || systolicBP > 250) {
@@ -46,7 +47,8 @@ class StressCalculatorService {
     // Heart rate zone analysis
     double hrFactor;
     if (pulseRate < 60) {
-      hrFactor = 0.8; // Bradycardia (possibly athletic, but can indicate stress)
+      hrFactor =
+          0.8; // Bradycardia (possibly athletic, but can indicate stress)
     } else if (pulseRate < 70) {
       hrFactor = 0.9;
     } else if (pulseRate < 80) {
@@ -60,18 +62,20 @@ class StressCalculatorService {
     // Age adjustment (if provided)
     double ageFactor = 1.0;
     if (age != null) {
-      if (age < 30) ageFactor = 1.1; // Younger people have more variable responses
-      else if (age > 60) ageFactor = 0.9; // Older people may have blunted responses
+      if (age < 30)
+        ageFactor = 1.1; // Younger people have more variable responses
+      else if (age > 60)
+        ageFactor = 0.9; // Older people may have blunted responses
     }
 
     // Calculate composite stress score (0-100 scale)
     // Formula: Weighted combination of cardiovascular indicators
-    double stressScore = (
-      (mapDeviation * 25) +           // MAP weight: 25%
-      (ppDeviation * 20) +            // Pulse Pressure weight: 20%
-      (rppDeviation * 35) +           // RPP weight: 35% (most indicative)
-      (hrFactor * 20)                 // HR factor weight: 20%
-    ) * ageFactor;
+    double stressScore = ((mapDeviation * 25) + // MAP weight: 25%
+            (ppDeviation * 20) + // Pulse Pressure weight: 20%
+            (rppDeviation * 35) + // RPP weight: 35% (most indicative)
+            (hrFactor * 20) // HR factor weight: 20%
+        ) *
+        ageFactor;
 
     // Normalize to 0-100 scale and clamp
     stressScore = ((stressScore - 80) * 1.25).clamp(0.0, 100.0);
@@ -88,6 +92,7 @@ class StressCalculatorService {
       diastolicBP: diastolicBP,
       pulseRate: pulseRate,
       age: age,
+      name: name,
     );
   }
 
@@ -122,11 +127,12 @@ class StressCalculatorService {
 
   /// Get trend analysis comparing current result with previous
   static String getTrendAnalysis(StressResult current, StressResult? previous) {
-    if (previous == null) return 'First measurement recorded. Keep tracking to see trends.';
-    
+    if (previous == null)
+      return 'First measurement recorded. Keep tracking to see trends.';
+
     final difference = current.stressScore - previous.stressScore;
     final timeDiff = current.timestamp.difference(previous.timestamp);
-    
+
     if (difference.abs() < 5) {
       return 'Your stress levels are stable compared to your last check ${timeDiff.inHours} hours ago.';
     } else if (difference < 0) {

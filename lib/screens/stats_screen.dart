@@ -16,14 +16,14 @@ class StatsScreen extends StatefulWidget {
 class _StatsScreenState extends State<StatsScreen> {
   List<StressResult> _history = [];
   bool _isLoading = true;
-  
+
   // Stats
   double _avgStress = 0;
   int _totalMeasurements = 0;
   double _minStress = 0;
   double _maxStress = 0;
   StressLevel? _mostCommonLevel;
-  
+
   // Distribution
   Map<StressLevel, int> _levelDistribution = {};
 
@@ -36,30 +36,36 @@ class _StatsScreenState extends State<StatsScreen> {
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
     final historyJson = prefs.getString('stress_history');
-    
+
     if (historyJson != null && historyJson.isNotEmpty) {
       final history = StressResult.decodeList(historyJson);
       setState(() {
         _history = history.reversed.toList(); // Newest first
         _totalMeasurements = history.length;
-        
+
         if (history.isNotEmpty) {
           // Calculate average stress
-          _avgStress = history.map((r) => r.stressScore).reduce((a, b) => a + b) / history.length;
-          
+          _avgStress =
+              history.map((r) => r.stressScore).reduce((a, b) => a + b) /
+                  history.length;
+
           // Find min and max
-          _minStress = history.map((r) => r.stressScore).reduce((a, b) => a < b ? a : b);
-          _maxStress = history.map((r) => r.stressScore).reduce((a, b) => a > b ? a : b);
-          
+          _minStress =
+              history.map((r) => r.stressScore).reduce((a, b) => a < b ? a : b);
+          _maxStress =
+              history.map((r) => r.stressScore).reduce((a, b) => a > b ? a : b);
+
           // Find most common level
           final levelCounts = <StressLevel, int>{};
           for (var result in history) {
             levelCounts[result.level] = (levelCounts[result.level] ?? 0) + 1;
           }
           _levelDistribution = levelCounts;
-          _mostCommonLevel = levelCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+          _mostCommonLevel = levelCounts.entries
+              .reduce((a, b) => a.value > b.value ? a : b)
+              .key;
         }
-        
+
         _isLoading = false;
       });
     } else {
@@ -91,7 +97,10 @@ class _StatsScreenState extends State<StatsScreen> {
                               end: Alignment.bottomRight,
                               colors: isDark
                                   ? [Color(0xFF1E1B4B), Color(0xFF312E81)]
-                                  : [AppTheme.primaryColor, AppTheme.secondaryColor],
+                                  : [
+                                      AppTheme.primaryColor,
+                                      AppTheme.secondaryColor
+                                    ],
                             ),
                           ),
                         ),
@@ -109,7 +118,7 @@ class _StatsScreenState extends State<StatsScreen> {
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
-                    
+
                     // Content
                     SliverToBoxAdapter(
                       child: Padding(
@@ -120,7 +129,7 @@ class _StatsScreenState extends State<StatsScreen> {
                             // Summary Cards
                             _buildSummarySection(context),
                             const SizedBox(height: 24),
-                            
+
                             // Stress Trend Chart
                             Text(
                               'Stress Trend',
@@ -132,13 +141,14 @@ class _StatsScreenState extends State<StatsScreen> {
                             Text(
                               'Your stress levels over time',
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.6),
                               ),
                             ),
                             const SizedBox(height: 16),
                             _buildTrendChart(context),
                             const SizedBox(height: 32),
-                            
+
                             // Distribution Chart
                             Text(
                               'Stress Level Distribution',
@@ -150,13 +160,14 @@ class _StatsScreenState extends State<StatsScreen> {
                             Text(
                               'Breakdown by stress category',
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.6),
                               ),
                             ),
                             const SizedBox(height: 16),
                             _buildDistributionChart(context),
                             const SizedBox(height: 32),
-                            
+
                             // Recent Measurements
                             Text(
                               'Recent Measurements',
@@ -165,7 +176,8 @@ class _StatsScreenState extends State<StatsScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            ..._history.take(10).map((result) => _buildHistoryItem(context, result)),
+                            ..._history.take(10).map(
+                                (result) => _buildHistoryItem(context, result)),
                             const SizedBox(height: 24),
                           ],
                         ),
@@ -219,7 +231,7 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget _buildSummarySection(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Column(
       children: [
         Row(
@@ -282,7 +294,7 @@ class _StatsScreenState extends State<StatsScreen> {
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -330,7 +342,7 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget _buildTrendChart(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     if (_history.length < 2) {
       return Container(
         height: 200,
@@ -348,10 +360,10 @@ class _StatsScreenState extends State<StatsScreen> {
         ),
       );
     }
-    
+
     // Take last 20 data points for the chart
     final chartData = _history.take(20).toList().reversed.toList();
-    
+
     return Container(
       height: 220,
       padding: const EdgeInsets.all(16),
@@ -381,6 +393,15 @@ class _StatsScreenState extends State<StatsScreen> {
           ),
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
+              axisNameWidget: Text(
+                'Stress Score',
+                style: TextStyle(
+                  color: isDark ? Color(0xFF94A3B8) : Color(0xFF64748B),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              axisNameSize: 24,
               sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 32,
@@ -397,6 +418,15 @@ class _StatsScreenState extends State<StatsScreen> {
               ),
             ),
             bottomTitles: AxisTitles(
+              axisNameWidget: Text(
+                'Recent Measurements',
+                style: TextStyle(
+                  color: isDark ? Color(0xFF94A3B8) : Color(0xFF64748B),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              axisNameSize: 24,
               sideTitles: SideTitles(showTitles: false),
             ),
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -464,19 +494,18 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget _buildDistributionChart(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     if (_levelDistribution.isEmpty) {
       return SizedBox.shrink();
     }
-    
+
     // Sort by stress level order
     final sortedEntries = StressLevel.values
         .where((level) => _levelDistribution.containsKey(level))
         .map((level) => MapEntry(level, _levelDistribution[level]!))
         .toList();
-    
+
     return Container(
-      height: 250,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDark ? Color(0xFF1E293B) : Colors.white,
@@ -489,63 +518,87 @@ class _StatsScreenState extends State<StatsScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: PieChart(
-              PieChartData(
-                sectionsSpace: 2,
-                centerSpaceRadius: 40,
-                sections: sortedEntries.map((entry) {
-                  final percentage = (entry.value / _totalMeasurements * 100);
-                  return PieChartSectionData(
-                    color: _getStressColor(entry.key),
-                    value: entry.value.toDouble(),
-                    title: '${percentage.toStringAsFixed(0)}%',
-                    radius: 50,
-                    titleStyle: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: sortedEntries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: _getStressColor(entry.key),
-                        borderRadius: BorderRadius.circular(3),
+          // Chart - Responsive sizing
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 300;
+              final content = [
+                Expanded(
+                  flex: isNarrow ? 0 : 3,
+                  child: SizedBox(
+                    height: 180,
+                    child: PieChart(
+                      PieChartData(
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 30,
+                        sections: sortedEntries.map((entry) {
+                          final percentage =
+                              (entry.value / _totalMeasurements * 100);
+                          return PieChartSectionData(
+                            color: _getStressColor(entry.key),
+                            value: entry.value.toDouble(),
+                            title: percentage >= 10
+                                ? '${percentage.toStringAsFixed(0)}%'
+                                : '',
+                            radius: 45,
+                            titleStyle: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _getLevelName(entry.key),
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '(${entry.value})',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              );
-            }).toList(),
+                if (!isNarrow) const SizedBox(width: 12),
+                // Legend
+                Expanded(
+                  flex: isNarrow ? 0 : 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: sortedEntries.map((entry) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: _getStressColor(entry.key),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                '${_getLevelName(entry.key)} (${entry.value})',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  fontSize: 11,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ];
+
+              if (isNarrow) {
+                return Column(children: content);
+              } else {
+                return Row(children: content);
+              }
+            },
           ),
         ],
       ),
@@ -557,7 +610,7 @@ class _StatsScreenState extends State<StatsScreen> {
     final isDark = theme.brightness == Brightness.dark;
     final color = _getStressColor(result.level);
     final dateFormat = DateFormat('MMM d, yyyy • h:mm a');
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       elevation: 0,
@@ -582,7 +635,7 @@ class _StatsScreenState extends State<StatsScreen> {
           ),
         ),
         title: Text(
-          result.levelText,
+          result.name ?? result.levelText,
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -590,6 +643,13 @@ class _StatsScreenState extends State<StatsScreen> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (result.name != null)
+              Text(
+                result.levelText,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: color.withOpacity(0.8),
+                ),
+              ),
             Text(
               dateFormat.format(result.timestamp),
               style: theme.textTheme.bodySmall?.copyWith(
