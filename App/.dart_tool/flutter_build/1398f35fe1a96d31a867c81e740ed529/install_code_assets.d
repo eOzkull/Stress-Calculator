@@ -1,0 +1,1 @@
+ C:\\Users\\USER\\Desktop\\stress-calculator\\stress_calculator\\.dart_tool\\flutter_build\\1398f35fe1a96d31a867c81e740ed529\\native_assets.json: 
