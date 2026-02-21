@@ -1,0 +1,21 @@
+{
+    "name": "Stress Calculator",
+    "short_name": "StressCalc",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#4A90A4",
+    "theme_color": "#4A90A4",
+    "description": "Calculate stress levels using BP and Pulse rate",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512"
+        }
+    ]
+}

@@ -10,7 +10,7 @@
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-To report a security vulnerability, please email **security@example.com** with:
+To report a security vulnerability, please open a [GitHub Security Advisory](../../security/advisories/new) or contact the maintainer directly via GitHub with:
 
 - A description of the vulnerability
 - Steps to reproduce the issue
