@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ThemeService {
   static const String _storageKey = 'theme_mode';
@@ -50,6 +51,13 @@ class ThemeService {
       setThemeMode(ThemeMode.light);
     } else {
       setThemeMode(ThemeMode.dark);
+    }
+  }
+
+  static Future<void> openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 }

@@ -548,32 +548,172 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _showAboutDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
-                color: AppTheme.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              child: Icon(Icons.favorite_rounded, color: AppTheme.primaryColor),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isDark
+                              ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
+                              : [AppTheme.primaryColor, AppTheme.secondaryColor],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 28),
+                    );
+                  },
+                ),
+              ),
             ),
             const SizedBox(width: 12),
-            Text('Stress Calculator'),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Stress Calculator'),
+                  Text(
+                    'Version 1.0.0',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-        content: Text(
-          'A comprehensive stress level calculator that uses cardiovascular markers to estimate your stress levels.\n\n'
-          'Version: 1.0.0\n\n'
-          'Features:\n'
-          '• Stress level calculation\n'
-          '• Historical tracking\n'
-          '• Statistics & trends\n'
-          '• Personalized recommendations\n\n'
-          'Note: This app provides estimates only. Please consult a healthcare professional for medical advice.',
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'A comprehensive stress level calculator that uses cardiovascular markers to estimate your stress levels.',
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: Text(
+                  'Developed by eOzka',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Key Features',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '• Real-time stress level calculation\n'
+                '• Historical data tracking\n'
+                '• Interactive statistics & trends\n'
+                '• Personalized recommendations\n'
+                '• Beautiful dark/light themes\n'
+                '• Mood tracking integration',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 16),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  ThemeService.openUrl('https://github.com/eOzkull/Stress-Calculator');
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.code_rounded, size: 18, color: Colors.grey[700]),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'View Source on GitHub',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.open_in_new, size: 16, color: Colors.grey[600]),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.warning_amber_rounded, color: Colors.red[400], size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Note: This app provides estimates only. Please consult a healthcare professional for medical advice.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.red[400],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Center(
+                child: Text(
+                  '© 2026 Stress Calculator. All rights reserved.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.5),
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
