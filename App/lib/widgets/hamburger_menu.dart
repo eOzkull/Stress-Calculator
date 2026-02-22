@@ -7,7 +7,7 @@ import '../screens/history_screen.dart';
 
 class HamburgerMenu extends StatefulWidget {
   final Widget? child;
-  
+
   const HamburgerMenu({super.key, this.child});
 
   @override
@@ -17,7 +17,7 @@ class HamburgerMenu extends StatefulWidget {
 class HamburgerMenuState extends State<HamburgerMenu> {
   List<StressResult> _history = [];
   bool _isLoading = true;
-  
+
   // Stats
   double _avgStress = 0;
   int _totalMeasurements = 0;
@@ -34,29 +34,35 @@ class HamburgerMenuState extends State<HamburgerMenu> {
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
     final historyJson = prefs.getString('stress_history');
-    
+
     if (historyJson != null && historyJson.isNotEmpty) {
       final history = StressResult.decodeList(historyJson);
       setState(() {
         _history = history;
         _totalMeasurements = history.length;
-        
+
         if (history.isNotEmpty) {
           // Calculate average stress
-          _avgStress = history.map((r) => r.stressScore).reduce((a, b) => a + b) / history.length;
-          
+          _avgStress =
+              history.map((r) => r.stressScore).reduce((a, b) => a + b) /
+                  history.length;
+
           // Find min and max
-          _minStress = history.map((r) => r.stressScore).reduce((a, b) => a < b ? a : b);
-          _maxStress = history.map((r) => r.stressScore).reduce((a, b) => a > b ? a : b);
-          
+          _minStress =
+              history.map((r) => r.stressScore).reduce((a, b) => a < b ? a : b);
+          _maxStress =
+              history.map((r) => r.stressScore).reduce((a, b) => a > b ? a : b);
+
           // Find most common level
           final levelCounts = <StressLevel, int>{};
           for (var result in history) {
             levelCounts[result.level] = (levelCounts[result.level] ?? 0) + 1;
           }
-          _mostCommonLevel = levelCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+          _mostCommonLevel = levelCounts.entries
+              .reduce((a, b) => a.value > b.value ? a : b)
+              .key;
         }
-        
+
         _isLoading = false;
       });
     } else {
@@ -76,9 +82,10 @@ class HamburgerMenuState extends State<HamburgerMenu> {
   Widget buildDrawer(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Drawer(
-      backgroundColor: isDark ? AppTheme.backgroundDark : AppTheme.backgroundLight,
+      backgroundColor:
+          isDark ? AppTheme.backgroundDark : AppTheme.backgroundLight,
       child: SafeArea(
         child: Column(
           children: [
@@ -90,9 +97,9 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: isDark 
-                      ? [Color(0xFF1E1B4B), Color(0xFF312E81)]
-                      : [Color(0xFF6366F1), Color(0xFF8B5CF6)],
+                  colors: isDark
+                      ? [const Color(0xFF1E1B4B), const Color(0xFF312E81)]
+                      : [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
                 ),
               ),
               child: Column(
@@ -105,7 +112,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.favorite_rounded,
                       color: Colors.white,
                       size: 32,
@@ -129,7 +136,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                 ],
               ),
             ),
-            
+
             // Stats Overview
             if (!_isLoading && _history.isNotEmpty)
               Container(
@@ -138,15 +145,15 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: isDark
-                        ? [Color(0xFF334155), Color(0xFF1E293B)]
-                        : [Colors.white, Color(0xFFF8FAFC)],
+                        ? [const Color(0xFF334155), const Color(0xFF1E293B)]
+                        : [Colors.white, const Color(0xFFF8FAFC)],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 10,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -155,7 +162,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                   children: [
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.analytics_rounded,
                           color: AppTheme.primaryColor,
                           size: 20,
@@ -181,7 +188,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                         ),
                         _buildStatItem(
                           context,
-                          '${_avgStress.toStringAsFixed(0)}',
+                          _avgStress.toStringAsFixed(0),
                           'Average',
                           Icons.show_chart,
                         ),
@@ -196,7 +203,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                   ],
                 ),
               ),
-            
+
             // Menu Items
             Expanded(
               child: ListView(
@@ -211,7 +218,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => StatsScreen()),
+                        MaterialPageRoute(builder: (_) => const StatsScreen()),
                       );
                     },
                   ),
@@ -224,11 +231,12 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => HistoryScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const HistoryScreen()),
                       );
                     },
                   ),
-                  
+
                   // Recent Measurements Preview
                   if (_history.isNotEmpty) ...[
                     const SizedBox(height: 16),
@@ -242,12 +250,14 @@ class HamburgerMenuState extends State<HamburgerMenu> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    ..._history.reversed.take(3).map((result) => _buildRecentItem(context, result)),
+                    ..._history.reversed
+                        .take(3)
+                        .map((result) => _buildRecentItem(context, result)),
                   ],
                 ],
               ),
             ),
-            
+
             // Footer
             Container(
               padding: const EdgeInsets.all(16),
@@ -264,7 +274,8 @@ class HamburgerMenuState extends State<HamburgerMenu> {
     );
   }
 
-  Widget _buildStatItem(BuildContext context, String value, String label, IconData icon) {
+  Widget _buildStatItem(
+      BuildContext context, String value, String label, IconData icon) {
     final theme = Theme.of(context);
     return Column(
       children: [
@@ -302,11 +313,11 @@ class HamburgerMenuState extends State<HamburgerMenu> {
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4),
       elevation: 0,
-      color: isDark ? Color(0xFF1E293B) : Colors.white,
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -345,11 +356,11 @@ class HamburgerMenuState extends State<HamburgerMenu> {
     final isDark = theme.brightness == Brightness.dark;
     final color = _getStressColor(result.level);
     final dateFormat = DateFormat('MMM d, h:mm a');
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       elevation: 0,
-      color: isDark ? Color(0xFF1E293B) : Colors.white,
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -365,7 +376,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
           child: Center(
             child: Text(
               result.emoji,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
           ),
         ),
@@ -382,7 +393,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
           ),
         ),
         trailing: Text(
-          '${result.stressScore.toStringAsFixed(0)}',
+          result.stressScore.toStringAsFixed(0),
           style: theme.textTheme.titleMedium?.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
@@ -397,7 +408,7 @@ class HamburgerMenuState extends State<HamburgerMenu> {
       case StressLevel.relaxed:
         return AppTheme.lowStressColor;
       case StressLevel.mild:
-        return Color(0xFF84CC16);
+        return const Color(0xFF84CC16);
       case StressLevel.moderate:
         return AppTheme.moderateStressColor;
       case StressLevel.high:

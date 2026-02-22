@@ -80,7 +80,7 @@ class _StatsScreenState extends State<StatsScreen> {
 
     return Scaffold(
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _history.isEmpty
               ? _buildEmptyState(context)
               : CustomScrollView(
@@ -96,7 +96,10 @@ class _StatsScreenState extends State<StatsScreen> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: isDark
-                                  ? [Color(0xFF1E1B4B), Color(0xFF312E81)]
+                                  ? [
+                                      const Color(0xFF1E1B4B),
+                                      const Color(0xFF312E81)
+                                    ]
                                   : [
                                       AppTheme.primaryColor,
                                       AppTheme.secondaryColor
@@ -104,7 +107,7 @@ class _StatsScreenState extends State<StatsScreen> {
                             ),
                           ),
                         ),
-                        title: Text(
+                        title: const Text(
                           'Statistics',
                           style: TextStyle(
                             color: Colors.white,
@@ -114,7 +117,7 @@ class _StatsScreenState extends State<StatsScreen> {
                         centerTitle: true,
                       ),
                       leading: IconButton(
-                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ),
@@ -192,9 +195,9 @@ class _StatsScreenState extends State<StatsScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Statistics'),
+        title: const Text('Statistics'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -250,7 +253,7 @@ class _StatsScreenState extends State<StatsScreen> {
               child: _buildSummaryCard(
                 context,
                 icon: Icons.show_chart,
-                value: '${_avgStress.toStringAsFixed(0)}',
+                value: _avgStress.toStringAsFixed(0),
                 label: 'Average Score',
                 color: _getStressColorForScore(_avgStress),
               ),
@@ -264,7 +267,7 @@ class _StatsScreenState extends State<StatsScreen> {
               child: _buildSummaryCard(
                 context,
                 icon: Icons.arrow_downward,
-                value: '${_minStress.toStringAsFixed(0)}',
+                value: _minStress.toStringAsFixed(0),
                 label: 'Lowest Score',
                 color: AppTheme.lowStressColor,
               ),
@@ -274,7 +277,7 @@ class _StatsScreenState extends State<StatsScreen> {
               child: _buildSummaryCard(
                 context,
                 icon: Icons.arrow_upward,
-                value: '${_maxStress.toStringAsFixed(0)}',
+                value: _maxStress.toStringAsFixed(0),
                 label: 'Highest Score',
                 color: AppTheme.criticalStressColor,
               ),
@@ -298,13 +301,13 @@ class _StatsScreenState extends State<StatsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Color(0xFF1E293B) : Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -347,7 +350,7 @@ class _StatsScreenState extends State<StatsScreen> {
       return Container(
         height: 200,
         decoration: BoxDecoration(
-          color: isDark ? Color(0xFF1E293B) : Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
@@ -368,13 +371,13 @@ class _StatsScreenState extends State<StatsScreen> {
       height: 220,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Color(0xFF1E293B) : Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -386,7 +389,8 @@ class _StatsScreenState extends State<StatsScreen> {
             horizontalInterval: 25,
             getDrawingHorizontalLine: (value) {
               return FlLine(
-                color: isDark ? Color(0xFF334155) : Color(0xFFE2E8F0),
+                color:
+                    isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
                 strokeWidth: 1,
               );
             },
@@ -396,7 +400,9 @@ class _StatsScreenState extends State<StatsScreen> {
               axisNameWidget: Text(
                 'Stress Score',
                 style: TextStyle(
-                  color: isDark ? Color(0xFF94A3B8) : Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
@@ -410,7 +416,9 @@ class _StatsScreenState extends State<StatsScreen> {
                   return Text(
                     value.toInt().toString(),
                     style: TextStyle(
-                      color: isDark ? Color(0xFF94A3B8) : Color(0xFF64748B),
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF64748B),
                       fontSize: 12,
                     ),
                   );
@@ -421,16 +429,20 @@ class _StatsScreenState extends State<StatsScreen> {
               axisNameWidget: Text(
                 'Recent Measurements',
                 style: TextStyle(
-                  color: isDark ? Color(0xFF94A3B8) : Color(0xFF64748B),
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               axisNameSize: 24,
-              sideTitles: SideTitles(showTitles: false),
+              sideTitles: const SideTitles(showTitles: false),
             ),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles:
+                const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           borderData: FlBorderData(show: false),
           minX: 0,
@@ -477,7 +489,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 return touchedSpots.map((spot) {
                   return LineTooltipItem(
                     'Score: ${spot.y.toStringAsFixed(0)}',
-                    TextStyle(
+                    const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -496,7 +508,7 @@ class _StatsScreenState extends State<StatsScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     if (_levelDistribution.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     // Sort by stress level order
@@ -508,13 +520,13 @@ class _StatsScreenState extends State<StatsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Color(0xFF1E293B) : Colors.white,
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -614,7 +626,7 @@ class _StatsScreenState extends State<StatsScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       elevation: 0,
-      color: isDark ? Color(0xFF1E293B) : Colors.white,
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -630,7 +642,7 @@ class _StatsScreenState extends State<StatsScreen> {
           child: Center(
             child: Text(
               result.emoji,
-              style: TextStyle(fontSize: 22),
+              style: const TextStyle(fontSize: 22),
             ),
           ),
         ),
@@ -659,18 +671,18 @@ class _StatsScreenState extends State<StatsScreen> {
             const SizedBox(height: 4),
             Row(
               children: [
-                Icon(Icons.favorite, size: 12, color: Colors.grey),
-                SizedBox(width: 4),
+                const Icon(Icons.favorite, size: 12, color: Colors.grey),
+                const SizedBox(width: 4),
                 Text(
                   '${result.systolicBP}/${result.diastolicBP}',
-                  style: TextStyle(fontSize: 11),
+                  style: const TextStyle(fontSize: 11),
                 ),
-                SizedBox(width: 12),
-                Icon(Icons.monitor_heart, size: 12, color: Colors.grey),
-                SizedBox(width: 4),
+                const SizedBox(width: 12),
+                const Icon(Icons.monitor_heart, size: 12, color: Colors.grey),
+                const SizedBox(width: 4),
                 Text(
                   '${result.pulseRate} BPM',
-                  style: TextStyle(fontSize: 11),
+                  style: const TextStyle(fontSize: 11),
                 ),
               ],
             ),
@@ -681,7 +693,7 @@ class _StatsScreenState extends State<StatsScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${result.stressScore.toStringAsFixed(0)}',
+              result.stressScore.toStringAsFixed(0),
               style: theme.textTheme.titleMedium?.copyWith(
                 color: color,
                 fontWeight: FontWeight.bold,
@@ -713,7 +725,7 @@ class _StatsScreenState extends State<StatsScreen> {
       case StressLevel.relaxed:
         return AppTheme.lowStressColor;
       case StressLevel.mild:
-        return Color(0xFF84CC16);
+        return const Color(0xFF84CC16);
       case StressLevel.moderate:
         return AppTheme.moderateStressColor;
       case StressLevel.high:
@@ -725,7 +737,7 @@ class _StatsScreenState extends State<StatsScreen> {
 
   Color _getStressColorForScore(double score) {
     if (score <= 20) return AppTheme.lowStressColor;
-    if (score <= 40) return Color(0xFF84CC16);
+    if (score <= 40) return const Color(0xFF84CC16);
     if (score <= 60) return AppTheme.moderateStressColor;
     if (score <= 80) return AppTheme.highStressColor;
     return AppTheme.criticalStressColor;
