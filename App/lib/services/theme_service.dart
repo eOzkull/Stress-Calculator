@@ -60,8 +60,7 @@ class ThemeService {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        // Fallback: Try launching with in-app webview
-        await launchUrl(uri, mode: LaunchMode.inAppWebView);
+        debugPrint('Cannot launch URL: $url');
       }
     } catch (e) {
       // If all else fails, log the error
