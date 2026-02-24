@@ -66,6 +66,11 @@ class ThemeService {
     } catch (e) {
       // If all else fails, log the error
       debugPrint('Error opening URL: $e');
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

@@ -1,8 +1,6 @@
-# Stress Calculator
+# 📊 Stress Calculator App
 
 > A comprehensive Flutter app that estimates your stress levels using cardiovascular markers and provides personalised recommendations to help you relax and recover.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Table of Contents
 
@@ -14,16 +12,20 @@
   - [Installation](#installation)
 - [Usage](#usage)
 - [Tech Stack](#tech-stack)
+- [Stress Calculation Logic](#stress-calculation-logic)
+- [Stress Level Interpretation](#stress-level-implementation)
 - [Contributing](#contributing)
 - [License](#license)
 
-## About
+# About
+A simple and interactive **Stress Calculator application** that evaluates a user's stress level using basic physiological inputs like **pulse rate** and **blood pressure**.
 
-Stress Calculator is a cross-platform Flutter application that analyzes your blood pressure (systolic/diastolic) and pulse rate to estimate your current stress level. It uses a composite cardiovascular scoring formula that weighs Mean Arterial Pressure, Pulse Pressure, and Rate Pressure Product to produce a stress score from 0 to 100. The app also considers age as an optional normalization factor and provides science-backed relaxation recommendations tailored to your result.
+This project demonstrates engineering and health-based logic using a clean UI and modular structure.  
+It is available as both a **web application** and an **Android APK**.
 
-> **Disclaimer:** This app provides estimates only. Please consult a healthcare professional for medical advice.
+---
 
-## Features
+## 🚀 Features
 
 - **Stress Calculation** – Enter blood pressure and pulse rate for an instant stress-level analysis (Relaxed → Mild → Moderate → High → Critical).
 - **Personalised Recommendations** – Breathing exercises, meditation techniques, physical activities, sensory grounding, and cognitive strategies matched to your stress level.
@@ -34,9 +36,17 @@ Stress Calculator is a cross-platform Flutter application that analyzes your blo
 - **Multi-person support** – Optionally label each measurement (e.g. "Dad", "Morning Check") to track multiple people.
 - **Cross-platform** – Runs on Android, iOS, Web, Windows, macOS, and Linux.
 
-## Screenshots
+simply put :-
 
-> Screenshots coming soon.
+- 🔢 Calculates stress using pulse rate and blood pressure  
+- 📐 Uses simple rule-based physiological thresholds  
+- 🧮 Real-time calculation and instant result display  
+- 🌐 Web-based version (HTML, CSS, JavaScript)  
+- 📱 Android APK version for mobile devices  
+- 🧩 Beginner-friendly and easy to understand  
+- 🎯 Useful for educational and demonstration purposes  
+
+---
 
 ## Getting Started
 
@@ -80,7 +90,16 @@ flutter build apk --release
 5. Use **View Statistics** to explore charts and trends across all saved readings.
 6. Use **View History** to browse or delete individual past measurements.
 
-## Tech Stack
+## 🛠️ Tech Stack
+
+### 🌐 Web Version
+- HTML  
+- CSS  
+- JavaScript  
+
+### 📱 Mobile Version
+- Converted into **Android APK**
+- Installable on Android devices
 
 | Layer | Technology |
 |---|---|
@@ -91,10 +110,70 @@ flutter build apk --release
 | Persistence | [shared_preferences](https://pub.dev/packages/shared_preferences) |
 | Localisation helpers | [intl](https://pub.dev/packages/intl) |
 
+
+---
+
+## 🧠 Stress Calculation Logic
+
+The calculator uses a **2-step rule-based model** to determine stress.
+
+---
+
+### 🔹 Step 1: Stress Score Calculation
+
+Excel Logic:
+=IF(A2>90,1,0)+IF(B2>130,1,0)
+
+
+**Inputs:**
+
+- **A2 → Pulse Rate (BPM)**
+- **B2 → Systolic Blood Pressure (mmHg)**
+
+**Rules:**
+
+- If Pulse > 90 → add **1 point**
+- If BP > 130 → add **1 point**
+
+👉 This produces a **Stress Score (C2)** between **0 and 2**
+
+---
+
+### 🔹 Step 2: Stress Level Classification
+
+Excel Logic:
+=IF(C2=0,"No Stress",IF(C2=1,"Mild Stress","High Stress"))
+
+
+---
+
+## 📊 Stress Level Interpretation
+
+| Stress Score | Condition | Result |
+|--------------|----------|--------|
+| **0** | Both values normal | 🟢 No Stress |
+| **1** | One value elevated | 🟡 Mild Stress |
+| **2** | Both values elevated | 🔴 High Stress |
+
+---
+
+## 🔮 Future Improvements
+
+- Add more health parameters (oxygen level, sleep, temperature)
+
+- Graph visualization of stress trends
+
+- Unit conversion support
+
+- User data storage & history tracking
+
+- iOS version of the app
+
 ## Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started.
 
 ## License
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+[![License: Apache2.0](https://img.shields.io/badge/License-Apache2.0-red.svg)](LICENSE)
+This project is licensed under the APACHE2.0 License – see the [LICENSE](LICENSE) file for details.
