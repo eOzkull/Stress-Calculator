@@ -1,109 +1,69 @@
 # 📊 Stress Calculator App
 
-A simple and interactive **Stress Calculator application** that evaluates a user's stress level using basic physiological inputs like **pulse rate** and **blood pressure**.
+A comprehensive **Stress Calculator application** built with Flutter that evaluates a user's stress level using cardiovascular physiological inputs: **systolic blood pressure**, **diastolic blood pressure**, **pulse rate**, and optionally **age** and **name**.
 
-This project demonstrates engineering and health-based logic using a clean UI and modular structure.  
-It is available as both a **web application** and an **Android APK**.
+It is available as a **web application**, **Android APK**, and **iOS** app.
 
 ---
 
 ## 🚀 Features
 
-- 🔢 Calculates stress using pulse rate and blood pressure  
-- 📐 Uses simple rule-based physiological thresholds  
-- 🧮 Real-time calculation and instant result display  
-- 🌐 Web-based version (HTML, CSS, JavaScript)  
-- 📱 Android APK version for mobile devices  
-- 🧩 Beginner-friendly and easy to understand  
-- 🎯 Useful for educational and demonstration purposes  
+- 🔢 Calculates stress using systolic BP, diastolic BP, and pulse rate (with optional age-adjusted scoring)
+- 📐 Uses a weighted cardiovascular stress index (MAP, pulse pressure, RPP) with normalization, clamping, and age adjustment
+- 🧮 Real-time calculation with animated result display
+- 💡 Personalized recommendations with multiple therapeutic techniques (breathing, meditation, physical, sensory, cognitive, social) based on stress level
+- 📈 History tracking with local storage and trend analysis
+- 📊 Statistical analysis and stress trend visualization (charts)
+- 🌙 Dark / Light / System theme support
+- 🌐 Web, Android, and iOS support
 
 ---
 
 ## 🛠️ Tech Stack
 
-### 🌐 Web Version
-- HTML  
-- CSS  
-- JavaScript  
-
-### 📱 Mobile Version
-- Converted into **Android APK**
-- Installable on Android devices
-
+- **Framework:** Flutter (Dart)
+- **Platforms:** Web, Android, iOS
+- **Key dependencies:**
+  - `shared_preferences` – local data persistence (history, settings)
+  - `fl_chart` – stress trend charts and visualizations
+  - `flutter_animate` – UI animations
+  - `intl` – date/time formatting
+  - `url_launcher` – external link support
 
 ---
 
 ## 🧠 Stress Calculation Logic
 
-The calculator uses a **2-step rule-based model** to determine stress.
+The calculator uses a **weighted cardiovascular stress index** based on four physiological indicators.
 
----
+### 🔹 Cardiovascular Indicators
 
-### 🔹 Step 1: Stress Score Calculation
+| Indicator | Formula | Weight |
+|-----------|---------|--------|
+| Mean Arterial Pressure (MAP) | `diastolicBP + (systolicBP - diastolicBP) / 3` | 25% |
+| Pulse Pressure (PP) | `systolicBP - diastolicBP` | 20% |
+| Rate Pressure Product (RPP) | `systolicBP × pulseRate` | 35% |
+| Heart Rate (HR) Factor | Zone-based multiplier (0.8 – 1.5) | 20% |
 
-Excel Logic:
-=IF(A2>90,1,0)+IF(B2>130,1,0)
+Each indicator is normalized against healthy adult averages (MAP: 93 mmHg, PP: 40 mmHg, RPP: 9600) and clamped to prevent extreme outliers. An optional **age adjustment factor** is applied when age is provided (under 30: ×1.1, over 60: ×0.9).
 
-
-**Inputs:**
-
-- **A2 → Pulse Rate (BPM)**
-- **B2 → Systolic Blood Pressure (mmHg)**
-
-**Rules:**
-
-- If Pulse > 90 → add **1 point**
-- If BP > 130 → add **1 point**
-
-👉 This produces a **Stress Score (C2)** between **0 and 2**
-
----
-
-### 🔹 Step 2: Stress Level Classification
-
-Excel Logic:
-=IF(C2=0,"No Stress",IF(C2=1,"Mild Stress","High Stress"))
-
+The final composite score is mapped to a **0–100 scale**.
 
 ---
 
 ## 📊 Stress Level Interpretation
 
-| Stress Score | Condition | Result |
-|--------------|----------|--------|
-| **0** | Both values normal | 🟢 No Stress |
-| **1** | One value elevated | 🟡 Mild Stress |
-| **2** | Both values elevated | 🔴 High Stress |
+| Score Range | Level | Emoji |
+|-------------|-------|-------|
+| 0 – 20 | Relaxed | 😌 |
+| 20 – 40 | Mild Stress | 🙂 |
+| 40 – 60 | Moderate Stress | 😰 |
+| 60 – 80 | High Stress | 😫 |
+| 80 – 100 | Critical Stress | 🚨 |
 
 ---
-
-## 💻 JavaScript Logic Used in App
-
-```javascript
-let score = 0;
-
-if (pulse > 90) score += 1;
-if (bp > 130) score += 1;
-
-let result = "";
-
-if (score === 0) {
-  result = "No Stress";
-} else if (score === 1) {
-  result = "Mild Stress";
-} else {
-  result = "High Stress";
-}
-```
 
 ## 🔮 Future Improvements
 
 - Add more health parameters (oxygen level, sleep, temperature)
-
-- Graph visualization of stress trends
-
-- Unit conversion support
-
-- User data storage & history tracking
-
-- iOS version of the app
+- Unit conversion support (e.g., kPa for blood pressure)
