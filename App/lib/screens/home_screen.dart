@@ -650,9 +650,15 @@ class _HomeScreenState extends State<HomeScreen>
               ),
               const SizedBox(height: 16),
               InkWell(
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  ThemeService.openUrl('https://github.com/eOzkull/Stress-Calculator');
+                  try {
+                    await ThemeService.openUrl('https://github.com/eOzkull/Stress-Calculator');
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Could not open GitHub link: $e')),
+                    );
+                  }
                 },
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
