@@ -58,15 +58,15 @@ class _ResultScreenState extends State<ResultScreen> {
   Color _getStressColor() {
     switch (widget.result.level) {
       case StressLevel.relaxed:
-        return Color(0xFF2A9D8F);
+        return const Color(0xFF2A9D8F);
       case StressLevel.mild:
-        return Color(0xFF7FB069);
+        return const Color(0xFF7FB069);
       case StressLevel.moderate:
-        return Color(0xFFE9C46A);
+        return const Color(0xFFE9C46A);
       case StressLevel.high:
-        return Color(0xFFF4A261);
+        return const Color(0xFFF4A261);
       case StressLevel.critical:
-        return Color(0xFFE76F51);
+        return const Color(0xFFE76F51);
     }
   }
 
@@ -100,7 +100,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     children: [
                       Text(
                         widget.result.emoji,
-                        style: TextStyle(fontSize: 60),
+                        style: const TextStyle(fontSize: 60),
                       )
                           .animate()
                           .scale(duration: 500.ms, curve: Curves.easeOutBack),
@@ -116,7 +116,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         ).animate().fadeIn(delay: 100.ms),
                       Text(
                         widget.result.levelText,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
@@ -128,7 +128,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
             ),
             leading: IconButton(
-              icon: Icon(Icons.close, color: Colors.white),
+              icon: const Icon(Icons.close, color: Colors.white),
               onPressed: () =>
                   Navigator.of(context).popUntil((route) => route.isFirst),
             ),
@@ -168,7 +168,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   if (_previousResult != null) ...[
                     const SizedBox(height: 16),
                     Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
@@ -219,13 +219,13 @@ class _ResultScreenState extends State<ResultScreen> {
                       entry.value,
                       entry.key,
                     );
-                  }).toList(),
+                  }),
 
                   const SizedBox(height: 32),
 
                   // Disclaimer
                   Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
@@ -426,7 +426,7 @@ class _ResultScreenState extends State<ResultScreen> {
     final theme = Theme.of(context);
 
     return Card(
-      margin: EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16),
       child: ExpansionTile(
         leading: Container(
           width: 48,
@@ -438,7 +438,7 @@ class _ResultScreenState extends State<ResultScreen> {
           child: Center(
             child: Text(
               rec.iconAsset,
-              style: TextStyle(fontSize: 24),
+              style: const TextStyle(fontSize: 24),
             ),
           ),
         ),
@@ -489,7 +489,7 @@ class _ResultScreenState extends State<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Divider(),
+                const Divider(),
                 const SizedBox(height: 8),
                 Text(
                   rec.description,
@@ -537,10 +537,10 @@ class _ResultScreenState extends State<ResultScreen> {
                       ],
                     ),
                   );
-                }).toList(),
+                }),
                 const SizedBox(height: 16),
                 Container(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: BorderRadius.circular(8),
@@ -576,7 +576,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   Widget _buildTag(BuildContext context, String text, Color color) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),

@@ -18,6 +18,13 @@ __pycache__/
 *.pyc
 *.pyo
 
+# Flutter specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
 # Environment variables
 .env
 .env.local

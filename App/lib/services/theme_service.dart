@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ThemeService {
   static const String _storageKey = 'theme_mode';
@@ -50,6 +51,26 @@ class ThemeService {
       setThemeMode(ThemeMode.light);
     } else {
       setThemeMode(ThemeMode.dark);
+    }
+  }
+
+  static Future<void> openUrl(String url) async {
+    try {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        // Fallback: Try launching with in-app webview
+        await launchUrl(uri, mode: LaunchMode.inAppWebView);
+      }
+    } catch (e) {
+      // If all else fails, log the error
+      debugPrint('Error opening URL: $e');
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

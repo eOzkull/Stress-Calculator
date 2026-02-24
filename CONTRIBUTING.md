@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for considering contributing to this project! Please take a moment to review these guidelines.
+Thank you for considering contributing to Stress Calculator! Please take a moment to review these guidelines.
 
 ## Code of Conduct
 
@@ -16,7 +16,7 @@ When filing a bug report, include:
 - A clear, descriptive title
 - Steps to reproduce the problem
 - Expected vs actual behaviour
-- Your environment (OS, language version, etc.)
+- Your environment (OS, Flutter version, device/emulator)
 
 ### Suggesting Features
 
@@ -44,17 +44,45 @@ Open a [feature request issue](../../issues/new?template=feature_request.md) wit
 
 ## Development Setup
 
+### Prerequisites
+
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) **≥ 3.0.0**
+- Dart **≥ 3.0.0** (bundled with Flutter)
+- An IDE such as [VS Code](https://code.visualstudio.com/) (with the Flutter extension) or [Android Studio](https://developer.android.com/studio)
+
+### Getting started
+
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/YOUR_USERNAME/Stress-Calculator.git
+cd Stress-Calculator/App
 
 # Install dependencies
-# (replace with your package manager command)
+flutter pub get
+
+# Run the app on a connected device / emulator
+flutter run
+
+# Run the test suite
+flutter test
+```
+
+### Useful commands
+
+```bash
+# Analyse code for issues
+flutter analyze
+
+# Auto-fix simple lint issues
+dart fix --apply
+
+# Format code
+dart format .
 ```
 
 ## Style Guide
 
 - Follow the coding conventions already present in the project.
+- Run `flutter analyze` before committing – there should be no new warnings or errors.
 - Keep commits small and focused.
 - Write clear commit messages.

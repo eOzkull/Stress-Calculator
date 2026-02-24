@@ -62,9 +62,9 @@ class StressCalculatorService {
     // Age adjustment (if provided)
     double ageFactor = 1.0;
     if (age != null) {
-      if (age < 30)
+      if (age < 30) {
         ageFactor = 1.1; // Younger people have more variable responses
-      else if (age > 60)
+      } else if (age > 60)
         ageFactor = 0.9; // Older people may have blunted responses
     }
 
@@ -127,8 +127,9 @@ class StressCalculatorService {
 
   /// Get trend analysis comparing current result with previous
   static String getTrendAnalysis(StressResult current, StressResult? previous) {
-    if (previous == null)
+    if (previous == null) {
       return 'First measurement recorded. Keep tracking to see trends.';
+    }
 
     final difference = current.stressScore - previous.stressScore;
     final timeDiff = current.timestamp.difference(previous.timestamp);

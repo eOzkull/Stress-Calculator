@@ -40,16 +40,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Clear History'),
-        content: Text('Are you sure you want to delete all history?'),
+        title: const Text('Clear History'),
+        content: const Text('Are you sure you want to delete all history?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: Text('Clear', style: TextStyle(color: Colors.red)),
+            child: const Text('Clear', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -96,15 +96,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Color _getStressColor(StressLevel level) {
     switch (level) {
       case StressLevel.relaxed:
-        return Color(0xFF2A9D8F);
+        return const Color(0xFF2A9D8F);
       case StressLevel.mild:
-        return Color(0xFF7FB069);
+        return const Color(0xFF7FB069);
       case StressLevel.moderate:
-        return Color(0xFFE9C46A);
+        return const Color(0xFFE9C46A);
       case StressLevel.high:
-        return Color(0xFFF4A261);
+        return const Color(0xFFF4A261);
       case StressLevel.critical:
-        return Color(0xFFE76F51);
+        return const Color(0xFFE76F51);
     }
   }
 
@@ -114,24 +114,24 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('History'),
+        title: const Text('History'),
         actions: [
           if (_history.isNotEmpty) ...[
             PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert),
+              icon: const Icon(Icons.more_vert),
               onSelected: (value) {
                 if (value == 'clear_all') _clearHistory();
                 if (value == 'clear_7') _deleteOlderThan(7);
                 if (value == 'clear_30') _deleteOlderThan(30);
               },
               itemBuilder: (context) => [
-                PopupMenuItem(
+                const PopupMenuItem(
                     value: 'clear_7', child: Text('Delete older than 7 days')),
-                PopupMenuItem(
+                const PopupMenuItem(
                     value: 'clear_30',
                     child: Text('Delete older than 30 days')),
-                PopupMenuDivider(),
-                PopupMenuItem(
+                const PopupMenuDivider(),
+                const PopupMenuItem(
                   value: 'clear_all',
                   child: Text('Clear All', style: TextStyle(color: Colors.red)),
                 ),
@@ -141,7 +141,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ],
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _history.isEmpty
               ? _buildEmptyState(context)
               : _buildHistoryList(context),
@@ -179,7 +179,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Widget _buildHistoryList(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       itemCount: _history.length,
       itemBuilder: (context, index) {
         final result = _history[index];
@@ -191,35 +191,36 @@ class _HistoryScreenState extends State<HistoryScreen> {
           direction: DismissDirection.endToStart,
           background: Container(
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(right: 20),
+            padding: const EdgeInsets.only(right: 20),
             color: Colors.red,
-            child: Icon(Icons.delete, color: Colors.white),
+            child: const Icon(Icons.delete, color: Colors.white),
           ),
           onDismissed: (direction) => _deleteResult(index),
           confirmDismiss: (direction) async {
             return await showDialog<bool>(
               context: context,
               builder: (context) => AlertDialog(
-                title: Text('Delete Record'),
-                content:
-                    Text('Are you sure you want to delete this measurement?'),
+                title: const Text('Delete Record'),
+                content: const Text(
+                    'Are you sure you want to delete this measurement?'),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text('Cancel'),
+                    child: const Text('Cancel'),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: Text('Delete', style: TextStyle(color: Colors.red)),
+                    child: const Text('Delete',
+                        style: TextStyle(color: Colors.red)),
                   ),
                 ],
               ),
             );
           },
           child: Card(
-            margin: EdgeInsets.only(bottom: 12),
+            margin: const EdgeInsets.only(bottom: 12),
             child: ListTile(
-              contentPadding: EdgeInsets.all(16),
+              contentPadding: const EdgeInsets.all(16),
               leading: Container(
                 width: 52, // Reduced slightly to fix potential overflow
                 height: 52,
@@ -237,10 +238,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       children: [
                         Text(
                           result.emoji,
-                          style: TextStyle(fontSize: 24),
+                          style: const TextStyle(fontSize: 24),
                         ),
                         Text(
-                          '${result.stressScore.toStringAsFixed(0)}',
+                          result.stressScore.toStringAsFixed(0),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -254,7 +255,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
               title: Text(
                 result.name ?? result.levelText,
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +266,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       style: TextStyle(
                           fontSize: 12, color: color.withOpacity(0.8)),
                     ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     dateFormat.format(result.timestamp),
                     style: TextStyle(
@@ -273,23 +274,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Icon(Icons.favorite,
                           size: 14, color: Colors.grey.shade500),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         '${result.systolicBP}/${result.diastolicBP}',
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Icon(Icons.monitor_heart,
                           size: 14, color: Colors.grey.shade500),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         '${result.pulseRate} BPM',
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
